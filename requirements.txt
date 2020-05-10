@@ -1,0 +1,5 @@
+PyYAML
+pexpect
+pygatt
+pandas
+numpy
