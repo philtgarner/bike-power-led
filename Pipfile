@@ -1,0 +1,20 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pyyaml = "*"
+rpi-ws281x = "*"
+adafruit-circuitpython-neopixel = "*"
+pexpect = "*"
+pygatt = "*"
+pandas = "*"
+numpy = "*"
+"rpi.gpio" = "*"
+adafruit-blinka = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.7"
