@@ -1,5 +1,3 @@
-#!/home/pi/.local/share/virtualenvs/power-led-EXGU0oXn/bin/python3
-
 import os
 import pygatt
 import yaml
@@ -80,8 +78,7 @@ def handle_data(handle, value):
     average_power = power_readings['power'].mean()
     led_colour = get_colour(average_power)
 
-    print('Average power: %d' % average_power)
-
+    # Change the LED colour
     change_colour(led_colour)
 
 
@@ -118,11 +115,9 @@ def get_colour(power):
 
 if __name__ == '__main__':
 
-    logging.basicConfig()
-    logging.getLogger('pygatt').setLevel(logging.DEBUG)
-
+    # Flash the LEDs blue to show startup
     change_colour(blue)
-    time.sleep(3)
+    time.sleep(1)
     change_colour(off)
 
     # Get the items from the config file
@@ -141,8 +136,9 @@ if __name__ == '__main__':
         # Connect to the power meter
         device = adapter.connect(device_id, address_type=address_type)
 
+        # flash the LEDs green to show we have connected
         change_colour(green)
-        time.sleep(3)
+        time.sleep(1)
         change_colour(off)
 
         # Subscribe to the Cycling Power Measurement characteristic
@@ -152,8 +148,9 @@ if __name__ == '__main__':
         while(True):
             time.sleep(1000)
     except:
+        # If we have an exception (most likely failed to connect) flash the LEDs red to tell the user
         change_colour(red)
-        time.sleep(3)
+        time.sleep(1)
         change_colour(off)
     finally:
         adapter.stop()
