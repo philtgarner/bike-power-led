@@ -54,6 +54,11 @@ address_type = pygatt.BLEAddressType.random
 
 
 def handle_data(handle, value):
+    """
+    The callback for the bluetooth characteristic subscription.
+    :param handle: integer, characteristic read handle the data was received on
+    :param value: bytearray, the data returned in the notification
+    """
     global power_readings
 
     # Get the current time.
@@ -83,6 +88,11 @@ def handle_data(handle, value):
 
 
 def change_colour(new_colour):
+    """
+    Changes the colour displayed on the LED ring.
+    Changes each LED in turn with a brief pause between each change.
+    :param new_colour: The new colour to display
+    """
     global current_colour
     global pixels
     interval = 0.05
@@ -97,6 +107,12 @@ def change_colour(new_colour):
 
 
 def get_colour(power):
+    """
+    Gets the colour associated with a given power.
+    This is calculated by working out what percentage of the users FTP they are at.
+    :param power: The current power
+    :return: The colour associated with the specified power
+    """
     percentage = power / ftp
 
     if percentage <= 0.59:
@@ -112,7 +128,13 @@ def get_colour(power):
     else:
         return red
 
+
 def flash_colour(colour):
+    """
+    Displays one colour and then turns the LEDs off.
+    Used to display information to the user
+    :param colour: The colour to flash
+    """
     change_colour(colour)
     time.sleep(1)
     change_colour(off)
@@ -146,7 +168,7 @@ if __name__ == '__main__':
         device.subscribe(characteristic, callback=handle_data)
 
         # Sleep while we receive events
-        while(True):
+        while True:
             time.sleep(1000)
     except:
         # If we have an exception (most likely failed to connect) flash the LEDs red to tell the user
