@@ -1,5 +1,3 @@
-#!/home/pi/.local/share/virtualenvs/power-led-EXGU0oXn/bin/python3
-
 import os
 import pygatt
 import yaml
@@ -56,6 +54,11 @@ address_type = pygatt.BLEAddressType.random
 
 
 def handle_data(handle, value):
+    """
+    The callback for the bluetooth characteristic subscription.
+    :param handle: integer, characteristic read handle the data was received on
+    :param value: bytearray, the data returned in the notification
+    """
     global power_readings
 
     # Get the current time.
@@ -80,12 +83,16 @@ def handle_data(handle, value):
     average_power = power_readings['power'].mean()
     led_colour = get_colour(average_power)
 
-    print('Average power: %d' % average_power)
-
+    # Change the LED colour
     change_colour(led_colour)
 
 
 def change_colour(new_colour):
+    """
+    Changes the colour displayed on the LED ring.
+    Changes each LED in turn with a brief pause between each change.
+    :param new_colour: The new colour to display
+    """
     global current_colour
     global pixels
     interval = 0.05
@@ -100,6 +107,12 @@ def change_colour(new_colour):
 
 
 def get_colour(power):
+    """
+    Gets the colour associated with a given power.
+    This is calculated by working out what percentage of the users FTP they are at.
+    :param power: The current power
+    :return: The colour associated with the specified power
+    """
     percentage = power / ftp
 
     if percentage <= 0.59:
@@ -116,14 +129,21 @@ def get_colour(power):
         return red
 
 
+def flash_colour(colour):
+    """
+    Displays one colour and then turns the LEDs off.
+    Used to display information to the user
+    :param colour: The colour to flash
+    """
+    change_colour(colour)
+    time.sleep(1)
+    change_colour(off)
+
+
 if __name__ == '__main__':
 
-    logging.basicConfig()
-    logging.getLogger('pygatt').setLevel(logging.DEBUG)
-
-    change_colour(blue)
-    time.sleep(3)
-    change_colour(off)
+    # Flash the LEDs blue to show startup
+    flash_colour(blue)
 
     # Get the items from the config file
     config_file_location = os.path.join(os.path.dirname(__file__), 'config.yml')
@@ -141,19 +161,17 @@ if __name__ == '__main__':
         # Connect to the power meter
         device = adapter.connect(device_id, address_type=address_type)
 
-        change_colour(green)
-        time.sleep(3)
-        change_colour(off)
+        # flash the LEDs green to show we have connected
+        flash_colour(green)
 
         # Subscribe to the Cycling Power Measurement characteristic
         device.subscribe(characteristic, callback=handle_data)
 
         # Sleep while we receive events
-        while(True):
+        while True:
             time.sleep(1000)
     except:
-        change_colour(red)
-        time.sleep(3)
-        change_colour(off)
+        # If we have an exception (most likely failed to connect) flash the LEDs red to tell the user
+        flash_colour(red)
     finally:
         adapter.stop()

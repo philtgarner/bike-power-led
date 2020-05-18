@@ -3,7 +3,7 @@
 ## Summary
 
 This script reads power from your bike power meter and lights LEDs in a colour associated with your exertion.
-It uses [pygatt](https://pypi.org/project/pygatt/) to talk to a Bluetooth powermeter.
+It uses [pygatt](https://pypi.org/project/pygatt/) to talk to a Bluetooth powermeter and a NeoPixel ring to display the colours.
 
 ## Setup
 
@@ -21,6 +21,41 @@ The following is a sample `config.yml` file:
     bluetooth-device: c1:70:6d:98:63:29
     ftp: 245
     power-average-duration: 3
+    
+### pipenv and setup
+
+This project uses [pipenv](https://pypi.org/project/pipenv/) to manage dependencies and virtual environments.
+I found that installing dependencies would result in a timeout on the Pi, [this article](https://stackoverflow.com/a/58329272) pointed me in the direction of setting `export PIPENV_TIMEOUT=9999` and it seems to work well.
+
+Running `setup.sh` on a Raspberry Pi should set everything up.
+This was developed using a Raspberry Pi 3 running _Raspbian Buster_ (the latest version at the time of writing).
+
+To control the LEDs the script must be run with `sudo`, doing so [means virtual environment variables etc can't be accessed](https://askubuntu.com/a/245921) in the same way.
+You must explicitly specify the location of your virtual environment.
+Run `pipenv --venv` to find the location of your virtual environment, something like this:
+
+    /home/pi/.local/share/virtualenvs/power-led-EXGU0oXn
+
+You can then run the following:
+
+    sudo /home/pi/.local/share/virtualenvs/power-led-EXGU0oXn/bin/python3 power.py
+    
+Alternatively you can add the following shebang to the top of the script
+
+    #!/home/pi/.local/share/virtualenvs/power-led-EXGU0oXn/bin/python3
+    
+and then run the script using using:
+
+    sudo ./power.py 
+
+### Running the script on startup
+
+To run the script at startup add the following line to `/etc/rc.local`:
+
+    sudo /home/pi/Documents/power-led/power.py &
+    
+This assumes you have added the shebang as described in the section above.
+Adjust the directories accordingly.
 
 
 ### Cycling Power Measurement characteristic
