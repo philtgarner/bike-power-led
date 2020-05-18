@@ -112,13 +112,16 @@ def get_colour(power):
     else:
         return red
 
+def flash_colour(colour):
+    change_colour(colour)
+    time.sleep(1)
+    change_colour(off)
+
 
 if __name__ == '__main__':
 
     # Flash the LEDs blue to show startup
-    change_colour(blue)
-    time.sleep(1)
-    change_colour(off)
+    flash_colour(blue)
 
     # Get the items from the config file
     config_file_location = os.path.join(os.path.dirname(__file__), 'config.yml')
@@ -137,9 +140,7 @@ if __name__ == '__main__':
         device = adapter.connect(device_id, address_type=address_type)
 
         # flash the LEDs green to show we have connected
-        change_colour(green)
-        time.sleep(1)
-        change_colour(off)
+        flash_colour(green)
 
         # Subscribe to the Cycling Power Measurement characteristic
         device.subscribe(characteristic, callback=handle_data)
@@ -149,8 +150,6 @@ if __name__ == '__main__':
             time.sleep(1000)
     except:
         # If we have an exception (most likely failed to connect) flash the LEDs red to tell the user
-        change_colour(red)
-        time.sleep(1)
-        change_colour(off)
+        flash_colour(red)
     finally:
         adapter.stop()
