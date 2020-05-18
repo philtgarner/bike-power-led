@@ -21,31 +21,8 @@ The following is a sample `config.yml` file:
     bluetooth-device: c1:70:6d:98:63:29
     ftp: 245
     power-average-duration: 3
-
-
-### Cycling Power Measurement characteristic
-
-This script reads the [Cycling Power Measurement](https://www.bluetooth.com/xml-viewer/?src=https://www.bluetooth.com/wp-content/uploads/Sitecore-Media-Library/Gatt/Xml/Characteristics/org.bluetooth.characteristic.cycling_power_measurement.xml).
-This contains the vast majority of the power data but the only part we are interested in is the `Instantaneous Power` part which is held in the second 16 bits (bits 17-32, inclusive).
-
-When learning about Bluetooth data [this tool](https://cryptii.com/pipes/integer-encoder) was invaluable for exploring the raw data.
-
-pygatt requires a long UUID for the characteristic but the Bluetooth spec provides only a short UUID.
-[This GitHub comment](https://github.com/peplin/pygatt/issues/140#issuecomment-330105261) describes how to convert from the short UUID to the long UUID.
-   
-## Zwift colours
-
-This script uses the same colours as Zwift.
-Thanks to [this GPLama video](https://www.youtube.com/watch?v=bOZtysy-L2w) for the Zwift colours:
-
-- Grey: <= 59%
-- Blue: 60%-75%
-- Green: 76%-89%
-- Yellow: 90%-104%
-- Orange: 105%-118%
-- Red: >= 119%
-
-## pipenv and setup
+    
+### pipenv and setup
 
 This project uses [pipenv](https://pypi.org/project/pipenv/) to manage dependencies and virtual environments.
 I found that installing dependencies would result in a timeout on the Pi, [this article](https://stackoverflow.com/a/58329272) pointed me in the direction of setting `export PIPENV_TIMEOUT=9999` and it seems to work well.
@@ -71,7 +48,7 @@ and then run the script using using:
 
     sudo ./power.py 
 
-## Running the script on startup
+### Running the script on startup
 
 To run the script at startup add the following line to `/etc/rc.local`:
 
@@ -79,3 +56,26 @@ To run the script at startup add the following line to `/etc/rc.local`:
     
 This assumes you have added the shebang as described in the section above.
 Adjust the directories accordingly.
+
+
+### Cycling Power Measurement characteristic
+
+This script reads the [Cycling Power Measurement](https://www.bluetooth.com/xml-viewer/?src=https://www.bluetooth.com/wp-content/uploads/Sitecore-Media-Library/Gatt/Xml/Characteristics/org.bluetooth.characteristic.cycling_power_measurement.xml).
+This contains the vast majority of the power data but the only part we are interested in is the `Instantaneous Power` part which is held in the second 16 bits (bits 17-32, inclusive).
+
+When learning about Bluetooth data [this tool](https://cryptii.com/pipes/integer-encoder) was invaluable for exploring the raw data.
+
+pygatt requires a long UUID for the characteristic but the Bluetooth spec provides only a short UUID.
+[This GitHub comment](https://github.com/peplin/pygatt/issues/140#issuecomment-330105261) describes how to convert from the short UUID to the long UUID.
+   
+## Zwift colours
+
+This script uses the same colours as Zwift.
+Thanks to [this GPLama video](https://www.youtube.com/watch?v=bOZtysy-L2w) for the Zwift colours:
+
+- Grey: <= 59%
+- Blue: 60%-75%
+- Green: 76%-89%
+- Yellow: 90%-104%
+- Orange: 105%-118%
+- Red: >= 119%
